@@ -67,7 +67,7 @@ flowchart TB
     end
 
     subgraph Executor["Executor"]
-        Exec["Ansible / NSO (external)"]
+        Exec["Ansible (SSH)"]
     end
 
     subgraph NetworkInfra["Network Infrastructure"]
@@ -99,14 +99,14 @@ flowchart TB
 | **Presentation** | Grafana, HyperDX, MCP assistant | In-repo + Cursor/MCP |
 | **Intent** | NetBox | External |
 | **Orchestrator** | GitLab CI/CD + Ansible + GitLab MCP | Extension ([gitlab/README.md](gitlab/README.md)) |
-| **Executor** | Ansible, NSO, etc. | External; in-pipeline Ansible applies config |
+| **Executor** | Ansible (SSH) | In-repo ([gitlab/ansible](gitlab/README.md)): apply, rollback |
 
 - **Collector:** gNMIc (gNMI streaming), Vector (syslog UDP 514), optional IPFIX overlay. NATS between gNMIc and processors.
 - **Observability:** Prometheus (metrics, PromQL), ClickHouse + HyperDX (logs, e.g. `default.syslog`, metrics/traces). MCP correlates Intent with Observability.
 - **Presentation:** Grafana (dashboards), HyperDX (logs/traces/metrics), MCP-based assistant (troubleshooting).
 - **Intent:** NetBox (external SoT). Consumed via MCP.
 - **Orchestrator:** GitLab CI/CD + Ansible ([gitlab/README.md](gitlab/README.md)) — collect, compare, apply dry-run, rollback; MCP-triggered pipelines.
-- **Executor:** Ansible in pipeline or external tools; MCP triggers dry-run, operator runs manual apply/rollback.
+- **Executor:** Ansible (SSH) in pipeline ([gitlab/ansible](gitlab/README.md)); MCP triggers dry-run, operator runs manual apply/rollback.
 
 ### NAF alignment (gaps and notes)
 
@@ -115,11 +115,11 @@ flowchart TB
 | **Intent** | NetBox | Aligned; SoT for sites, devices, interfaces, IPs. |
 | **Collector** | gNMIc, Vector, optional IPFIX | Strong fit; SNMP not in stack. |
 | **Observability** | Prometheus, ClickHouse, HyperDX | Strong fit; add drift/events later if needed. |
-| **Executor** | — | Out of scope; Ansible/NSO in pipeline or lab. |
+| **Executor** | Ansible (SSH) | In-repo; apply/rollback playbooks in [gitlab/ansible](gitlab/README.md). |
 | **Orchestrator** | GitLab CI/CD + Ansible + GitLab MCP | Scheduled collect/diff; MCP-triggered dry-run. See [gitlab/README.md](gitlab/README.md). |
 | **Presentation** | Grafana, MCP assistant | Aligned. |
 
-**Conclusions:** Intent, Collector, Observability, and Presentation map to NetBox, gNMIc/syslog, Prometheus/ClickHouse, and Grafana/MCP. Executor is intentionally external (Ansible in pipeline). Orchestrator is the GitLab + Ansible extension. Reference: [NAF Framework](https://reference.networkautomation.forum/Framework/Framework/).
+**Conclusions:** Intent, Collector, Observability, and Presentation map to NetBox, gNMIc/syslog, Prometheus/ClickHouse, and Grafana/MCP. Executor is Ansible (SSH) in pipeline ([gitlab/ansible](gitlab/README.md)). Orchestrator is GitLab CI/CD + Ansible. Reference: [NAF Framework](https://reference.networkautomation.forum/Framework/Framework/).
 
 [Documentation by folder](#documentation-by-folder) below.
 
