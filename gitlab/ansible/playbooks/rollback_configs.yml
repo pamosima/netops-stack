@@ -13,8 +13,10 @@
 - name: Rollback to baseline config
   hosts: all
   gather_facts: false
+  # Persistent connection is established on first device task; timeout must be set here so configure replace gets it
   environment:
     ANSIBLE_HOST_KEY_CHECKING: 'false'
+    ANSIBLE_PERSISTENT_COMMAND_TIMEOUT: "{{ (rollback_configure_replace_timeout | default(120) | string) if (rollback_use_configure_replace | default(false) | bool) else '30' }}"
 
   vars:
     ansible_connection: ansible.netcommon.network_cli
@@ -33,6 +35,8 @@
     rollback_baseline_url_base: ""   # e.g. http://gitlab/-/raw/main/ansible/configs/baseline → per-host: {{ base }}/{{ inventory_hostname }}.txt
     rollback_baseline_flash_path: ""
     rollback_baseline_url_resolved: "{{ (rollback_baseline_url | default('') | trim) if (rollback_baseline_url | default('') | trim != '') else ((rollback_baseline_url_base | default('') | trim | regex_replace('/$', '')) ~ '/' ~ inventory_hostname ~ '.txt') if (rollback_baseline_url_base | default('') | trim != '') else '' }}"
+    # configure replace can take 60–120+ sec on large configs; override with -e rollback_configure_replace_timeout=180
+    rollback_configure_replace_timeout: 120
 
   tasks:
     - name: Include compare/diff logic (writes .diff when config differs)
@@ -69,6 +73,15 @@
       delegate_to: localhost
 
     # --- Optional: Cisco "configure replace" (true replace: adds and removes to match file; no VLAN parsing needed) ---
+    # Device must be able to reach the URL (HTTP). GitLab raw: .../project/-/raw/<branch>/ansible/configs/baseline/<host>.txt
+    - name: Show configure replace URL (for verification)
+      ansible.builtin.debug:
+        msg: "configure replace will use: {{ rollback_baseline_url_resolved }} (device must reach this URL)"
+      when: >
+        baseline_stat.stat.exists | default(false) and diff_result.rc == 1 and not ansible_check_mode
+        and rollback_use_configure_replace | default(false) | bool
+        and (rollback_baseline_url_resolved | default('') | trim != '')
+
     - name: Rollback via configure replace (device must have baseline at URL or on flash)
       when: >
         baseline_stat.stat.exists | default(false) and diff_result.rc == 1 and not ansible_check_mode
@@ -137,9 +150,12 @@
     - name: Show diff (check mode) — +/- lines only
       when: baseline_stat.stat.exists | default(false) and diff_result.rc == 1 and ansible_check_mode
       block:
-        - name: Grep +/- lines from diff file (exclude ---/+++ headers and timestamp comment lines)
+        # .diff is "baseline vs current": - = baseline, + = current. For rollback we invert so
+        # - = removed (current-only) and + = added (baseline-only).
+        - name: Grep +/- lines from diff file and invert for rollback view (exclude ---/+++ headers)
           ansible.builtin.shell: |
-            grep -E '^[+-]' "{{ diff_file_abs }}" | grep -v -E '^[+-]{3}' | grep -v 'NVRAM config last updated' || true
+            grep -E '^[+-]' "{{ diff_file_abs }}" | grep -v -E '^[+-]{3}' | grep -v 'NVRAM config last updated' \
+            | sed 's/^+/__RB_MINUS__/' | sed 's/^-/+/' | sed 's/^__RB_MINUS__/-/' || true
           vars:
             diff_file_abs: "{{ playbook_dir }}/../{{ collected_dir }}/{{ inventory_hostname }}.diff"
           register: _diff_plus_minus
@@ -149,7 +165,7 @@
 
         - name: Clarify diff meaning for rollback
           ansible.builtin.debug:
-            msg: "+ = in running config (would be REMOVED by rollback); - = in baseline (would be ADDED by rollback)."
+            msg: "- = removed by rollback; + = added by rollback."
           when: (_diff_plus_minus.stdout_lines | default((_diff_plus_minus.stdout | default('') | trim | split('\n')))) | default([]) | reject('equalto', '') | list | length > 0
 
         - name: Print changes

@@ -8,6 +8,13 @@ from typing import Any, Dict, Optional
 
 from . import clickhouse_tools, gitlab_tools, ios_xe_tools, netbox_tools, prometheus_tools
 
+# Strip ANSI escape sequences so log parsing works when artifact contains terminal colors
+_ANSI_RE = re.compile(r"\x1b\[[\d;]*m")
+
+
+def _strip_ansi(text: str) -> str:
+    return _ANSI_RE.sub("", text) if text else ""
+
 
 def run_troubleshoot_flow(
     device: str,
@@ -207,18 +214,32 @@ def run_troubleshoot_flow(
                 if not art.get("success") or not art.get("content"):
                     out["config_compare"] = out.get("config_compare") or "Could not fetch compare_output.log artifact."
                 else:
-                    content = art.get("content", "")
+                    content = _strip_ansi(art.get("content", ""))
                     device_escaped = re.escape(device)
-                    match_ok = re.search(rf"ok: \[{device_escaped}\].*?\"No changes\.\"", content)
-                    match_diff = re.search(rf"Config differs from baseline \({device_escaped}\)", content)
-                    if match_ok:
-                        out["config_compare"] = "No changes (running config matches collected baseline)."
-                    elif match_diff:
+                    # Drift: check first so we don't falsely match another host's "No changes."
+                    match_diff = re.search(
+                        rf"Config differs from baseline \({device_escaped}\)",
+                        content,
+                    )
+                    # No-drift: require device-specific "No changes." (ok: [device] ... "No changes.")
+                    match_ok = re.search(
+                        rf"ok: \[{device_escaped}\][\s\S]*?\"No changes\.\"",
+                        content,
+                    )
+                    # Task "Config matches baseline (device)" then ok: [device] then "No changes." (same device)
+                    match_match_task = re.search(
+                        rf"Config matches baseline \({device_escaped}\)[\s\S]*?ok: \[{device_escaped}\][\s\S]*?\"No changes\.\"",
+                        content,
+                    )
+                    if match_diff:
                         out["config_compare"] = "Drift detected (running config differs from baseline). See drift flow or compare_output.log."
+                    elif match_ok or match_match_task:
+                        out["config_compare"] = "No changes (running config matches collected baseline)."
+                        out["config_diff_live"] = "No diff (config matches baseline)."
                     else:
                         out["config_compare"] = f"Compare ran; device {device} not found in output or format unknown."
                 # Try device name first; inventory may use primary_ip as hostname so try that next.
-                # CI artifact paths are relative to ansible/: compare_output.log, collected/*.diff
+                # CI artifact paths: compare_output.log; .diff files under configs/baseline/ (or ansible/configs/baseline)
                 primary_ip = None
                 if out["netbox_hits"]:
                     primary_ip = (out["netbox_hits"][0].get("primary_ip") or "").split("/")[0] or None
@@ -252,8 +273,11 @@ def run_troubleshoot_flow(
             out["config_compare"] = out.get("config_compare") or f"Error: {e}"
 
         # Live diff: prefer pipeline diff (compare job artifact or repo ansible/configs/baseline/*.diff); else running vs baseline via IOS-XE
+        # Skip when we already determined no drift from compare_output.log (avoids "No collect_configs artifact" message)
         try:
-            if pipeline_diff_content and pipeline_diff_content.strip():
+            if out.get("config_compare") == "No changes (running config matches collected baseline).":
+                pass  # config_diff_live already set above
+            elif pipeline_diff_content and pipeline_diff_content.strip():
                 if out.get("config_diff_source") != "repository":
                     out["config_diff_source"] = "pipeline"
                 source_label = "repository (committed)" if out.get("config_diff_source") == "repository" else "GitLab compare pipeline"

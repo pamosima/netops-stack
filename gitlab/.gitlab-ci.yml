@@ -134,7 +134,7 @@ compare_configs:
   artifacts:
     paths:
       - ansible/compare_output.log
-      - ansible/configs/baseline/*.diff
+      - ansible/configs/baseline/
     expire_in: 7 days
   allow_failure: true
 
