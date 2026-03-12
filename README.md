@@ -203,7 +203,8 @@ docker compose down
 
 ## Kudos
 
-Telemetry and pipeline ideas in this stack draw on **[gnp-stack](https://github.com/Untersander/gnp-stack/)** — the gNMIc–NATS–Prometheus stack for network telemetry. Thanks to that project for pioneering a “point and shoot” streaming-telemetry experience.
+- **Telemetry:** The telemetry idea in this stack draws on **[gnp-stack](https://github.com/Untersander/gnp-stack/)** — the gNMIc–NATS–Prometheus stack for network telemetry. Thanks to that project for pioneering a “point and shoot” streaming-telemetry experience.
+- **Presentation:** *Network Observability Redefined with a Modern Open-Source Pluggable Tech-Stack* — Jan Untersander, Ramon Bister, Sascha Häring (OST/INS), [CHNUG #1](https://chnug.ch/chnug001/) (4 Dec 2025 @ OST).
 
 ## Contributing
 
