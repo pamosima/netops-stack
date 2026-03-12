@@ -5,6 +5,12 @@
 
 Observability and orchestration for **network automation**: gNMIc (gNMI streaming), Prometheus, ClickHouse (ClickStack), Grafana — plus GitLab CI/CD and Ansible for config collection, diff, apply, and rollback. Docker Compose with optional syslog and IPFIX. Built for AI/MCP troubleshooting and operational insights.
 
+## Live Demo
+
+![AIOps demo](_img/aiops-demo_short.gif)
+
+*Demo: **"Troubleshoot why client at site-1 has no connectivity."** The NetOps Assistant uses the troubleshoot-site flow: resolves the site in NetBox, finds all devices at that site, then for each device runs NetBox info, Prometheus metrics (up/down), syslog (ClickHouse), and config drift. One prompt gives a full site health view to pinpoint connectivity issues.*
+
 ## Description
 
 **netops-stack** is a composable Docker-based stack that provides:
@@ -35,78 +41,25 @@ Data flow: **Collector** → Observability; **Orchestrator** ↔ Collector; **In
 
 ### Diagram (NAF-aligned)
 
-```mermaid
-flowchart TB
-    subgraph Presentation["Presentation"]
-        Grafana["Grafana"]
-        HyperDX["HyperDX"]
-        MCP["MCP Assistant (Cursor)"]
-    end
-
-    subgraph Observability["Observability"]
-        ObservedState[("Observed State")]
-        ObservedLogic["Observed Logic"]
-        Prometheus["Prometheus"]
-        ClickHouse["ClickHouse"]
-    end
-
-    subgraph Orchestrator["Orchestrator"]
-        Orch["GitLab CI/CD + Ansible + GitLab MCP"]
-    end
-
-    subgraph Intent["Intent"]
-        IntendedState[("Intended State")]
-        IntendedLogic["Intended Logic"]
-        NetBox["NetBox (SoT)"]
-    end
-
-    subgraph Collector["Collector"]
-        gNMIc["gNMIc"]
-        Vector["Vector (syslog)"]
-        IPFIX["IPFIX (optional)"]
-    end
-
-    subgraph Executor["Executor"]
-        Exec["Ansible (SSH)"]
-    end
-
-    subgraph NetworkInfra["Network Infrastructure"]
-        Devices["Network devices"]
-    end
-
-    Presentation <--> Observability
-    Presentation <--> Orchestrator
-    Presentation <--> Intent
-
-    Observability <--> Orchestrator
-    Orchestrator <--> Intent
-
-    Collector --> Observability
-    Collector <--> Orchestrator
-    NetworkInfra --> Collector
-
-    Orchestrator --> Executor
-    Intent --> Executor
-    Executor --> NetworkInfra
-```
+![NetOps Stack toolchain](_img/toolchain.png)
 
 ### netops-stack mapping
 
-| NAF block | netops-stack components | In-repo / external |
-|-----------|-------------------------|---------------------|
-| **Collector** | [gNMIc](gnmic/README.md), [Vector](vector/README.md), IPFIX (optional) | In-repo (compose) |
-| **Observability** | [Prometheus](prometheus/README.md), [ClickHouse](clickhouse/README.md), HyperDX | In-repo (compose) |
-| **Presentation** | [Grafana](grafana/README.md), HyperDX, [MCP assistant](netops-mcp-server/README.md) | In-repo + [LibreChat](netops-mcp-server/README.md) |
-| **Intent** | NetBox | External |
-| **Orchestrator** | [GitLab CI/CD + Ansible](gitlab/README.md) + GitLab MCP | In-repo ([gitlab/](gitlab/README.md)) |
-| **Executor** | [Ansible (SSH)](gitlab/README.md) | In-repo ([gitlab/ansible](gitlab/README.md)): apply, rollback |
+| NAF block | Tools | In-repo / external |
+|-----------|-------|---------------------|
+| **Presentation** | LibreChat with NetOps Assistant (MCP Client), [Grafana](grafana/README.md), HyperDX | In-repo + [LibreChat](netops-mcp-server/README.md) |
+| **Observability** | [Prometheus](prometheus/README.md), [Vector](vector/README.md), [ClickHouse](clickhouse/README.md) | In-repo (compose) |
+| **Orchestrator** | [GitLab CI/CD](gitlab/README.md) | In-repo ([gitlab/](gitlab/README.md)) |
+| **Intent (SoT)** | NetBox, GitLab | External + in-repo |
+| **Collector** | gNMIc, Syslog, IPFIX, SSH | In-repo ([gNMIc](gnmic/README.md), [Vector](vector/README.md)) + SSH in Ansible |
+| **Executor** | Ansible | In-repo ([gitlab/ansible](gitlab/README.md)): apply, rollback |
 
-- **Collector:** gNMIc (gNMI streaming), Vector (syslog UDP 514), optional IPFIX overlay. NATS between gNMIc and processors.
-- **Observability:** Prometheus (metrics, PromQL), ClickHouse + HyperDX (logs, e.g. `default.syslog`, metrics/traces). MCP correlates Intent with Observability.
-- **Presentation:** Grafana (dashboards), HyperDX (logs/traces/metrics), MCP-based assistant (troubleshooting).
-- **Intent:** NetBox (external SoT). Consumed via MCP.
-- **Orchestrator:** GitLab CI/CD + Ansible ([gitlab/README.md](gitlab/README.md)) — collect, compare, apply dry-run, rollback; MCP-triggered pipelines.
-- **Executor:** Ansible (SSH) in pipeline ([gitlab/ansible](gitlab/README.md)); MCP triggers dry-run, operator runs manual apply/rollback.
+- **Presentation:** LibreChat with NetOps Assistant (MCP Client), Grafana (dashboards), HyperDX (logs/traces/metrics).
+- **Observability:** Prometheus (metrics, PromQL), Vector (log pipeline), ClickHouse (logs, e.g. `default.syslog`, metrics/traces).
+- **Orchestrator:** GitLab CI/CD ([gitlab/README.md](gitlab/README.md)) — collect, compare, apply dry-run, rollback; MCP-triggered pipelines.
+- **Intent (SoT):** NetBox, GitLab (config baseline and desired state). Consumed via MCP.
+- **Collector:** gNMIc (gNMI streaming), Syslog (Vector), IPFIX (optional), SSH (Ansible).
+- **Executor:** Ansible in pipeline ([gitlab/ansible](gitlab/README.md)); MCP triggers dry-run, operator runs manual apply/rollback.
 
 ### NAF alignment (gaps and notes)
 
