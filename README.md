@@ -174,6 +174,8 @@ Documentation lives in each component folder. Start here:
 | [prometheus/](prometheus/README.md) | [README](prometheus/README.md) | Scrape config, metrics, MCP |
 | [grafana/](grafana/README.md) | [README](grafana/README.md) | Dashboards, provisioning |
 | [nats/](nats/README.md) | [README](nats/README.md) | Message bus for gNMIc pipeline |
+| [cml/](cml/README.md) | [README](cml/README.md) | Cisco Modeling Labs topology (BGP-EVPN lab), import and stack alignment |
+| [netbox/](netbox/README.md) | [README](netbox/README.md) | NetBox bulk-import seed data (regions, sites, roles, types, devices) matching the lab |
 | [netops-mcp-server/](netops-mcp-server/README.md) | [README](netops-mcp-server/README.md) | MCP server: GitLab, Prometheus, ClickHouse, NetBox, IOS-XE, flows |
 
 - **Deployment:** [DEPLOYMENT.md](DEPLOYMENT.md)
