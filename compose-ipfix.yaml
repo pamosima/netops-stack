@@ -1,7 +1,7 @@
 # Optional overlay: add IPFIX/NetFlow/sFlow collector (GoFlow2).
 # Usage:
 #   docker compose -f compose.yaml -f compose-ipfix.yaml up -d
-# Or with IOS-XE: docker compose -f compose.yaml -f compose-iosxe.yaml -f compose-ipfix.yaml up -d
+# Example: docker compose -f compose.yaml -f compose-ipfix.yaml up -d
 #
 # Image: https://hub.docker.com/r/netsampler/goflow2 (IPFIX/NetFlow/sFlow)
 # Devices send flows to the host IP (e.g. 198.18.134.22) on the exposed UDP ports.

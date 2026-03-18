@@ -1,12 +1,13 @@
+# gNMIc emitter: IOS-XE JetStream → Prometheus remote_write
 ---
 log: true
 
 inputs:
-  nats-srl:
+  nats-iosxe:
     type: jetstream
-    name: gnmic-srl-emitter
+    name: gnmic-iosxe-emitter
     address: nats:4222
-    stream: srl
+    stream: iosxe
     subjects: []
     format: event
     deliver-policy: new
@@ -19,26 +20,7 @@ inputs:
     outputs:
       - prom-write
     event-processors:
-      - srl-up-down-map
-
-  nats-eos:
-    type: jetstream
-    name: gnmic-eos-emitter
-    address: nats:4222
-    stream: eos
-    subjects: []
-    format: event
-    deliver-policy: new
-    subject-format: subscription.target
-    connect-time-wait: 3s
-    debug: false
-    num-workers: 1
-    buffer-size: 1000
-    fetch-batch-size: 500
-    outputs:
-      - prom-write
-    event-processors:
-      - eos-up-down-map
+      - iosxe-up-down-map
 
 outputs:
   prom-write:
@@ -55,25 +37,8 @@ outputs:
     num-writers: 1
     debug: false
 
-
 processors:
-  # srl
-  srl-up-down-map:
-    event-strings:
-      value-names:
-        - "oper-state"
-      transforms:
-        - replace:
-            apply-on: "value"
-            old: "up"
-            new: "1"
-        - replace:  
-            apply-on: "value"
-            old: "down"
-            new: "0"
-
-  # eos          
-  eos-up-down-map:
+  iosxe-up-down-map:
     event-strings:
       value-names:
         - oper-status
@@ -96,31 +61,9 @@ processors:
             old: "DOWN"
             new: "0"
 
-
 api-server:
   address: :7890
   timeout: 10s
-  # tls:
-  #   # string, path to the CA certificate file,
-  #   # this certificate is used to verify the clients certificates.
-  #   ca-file:
-  #   # string, server certificate file.
-  #   cert-file:
-  #   # string, server key file.
-  #   key-file:
-  #   # string, one of `"", "request", "require", "verify-if-given", or "require-verify" 
-  #   #  - request:         The server requests a certificate from the client but does not 
-  #   #                     require the client to send a certificate. 
-  #   #                     If the client sends a certificate, it is not required to be valid.
-  #   #  - require:         The server requires the client to send a certificate and does not 
-  #   #                     fail if the client certificate is not valid.
-  #   #  - verify-if-given: The server requests a certificate, 
-  #   #                     does not fail if no certificate is sent. 
-  #   #                     If a certificate is sent it is required to be valid.
-  #   #  - require-verify:  The server requires the client to send a valid certificate.
-  #   #
-  #   # if no ca-file is present, `client-auth` defaults to ""`
-  #   # if a ca-file is set, `client-auth` defaults to "require-verify"`
   enable-metrics: true
   debug: false
   healthz-disable-logging: true

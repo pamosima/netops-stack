@@ -108,14 +108,13 @@ docker compose -f compose.yaml -f compose-clickstack.yaml up -d
 |----------------------|----------------------------------------------|
 | `compose-syslog.yaml`    | Syslog → Vector → ClickHouse                 |
 | `compose-ipfix.yaml`     | IPFIX/NetFlow/sFlow                         |
-| `compose-iosxe.yaml`     | gNMIc config for IOS-XE / Catalyst 9k       |
 
 **IPFIX/NetFlow/sFlow:** Use `compose-ipfix.yaml`; collector listens on host UDP 4739 (IPFIX), 2055 (NetFlow v9), 6343 (sFlow). Point devices at the host IP and the relevant port. Prometheus scrapes the IPFIX service on 8081. See `compose-ipfix.yaml` for the image and service name.
 
 Full stack example (IOS-XE, IPFIX, syslog):
 
 ```bash
-docker compose -f compose.yaml -f compose-iosxe.yaml -f compose-ipfix.yaml \
+docker compose -f compose.yaml -f compose-ipfix.yaml \
   -f compose-clickstack.yaml -f compose-syslog.yaml up -d
 ```
 

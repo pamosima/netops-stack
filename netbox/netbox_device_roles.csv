@@ -1,0 +1,4 @@
+Name,Devices,VMs,Color,VM role,Description,ID,Parent,Config template,Slug,Tags,Created,Last updated
+Border/Spine,2,0,#2196f3,True,,3,,,borderspine,,2026-03-16T11:20:50.068257+00:00,2026-03-18T12:59:32.695902+00:00
+Leaf,2,0,#00ffff,True,,2,,,leaf,,2026-03-16T11:20:19.489962+00:00,2026-03-18T12:59:49.287149+00:00
+Router,1,0,#9e9e9e,True,,4,,,router,,2026-03-17T09:50:08.149073+00:00,2026-03-17T09:50:08.149098+00:00

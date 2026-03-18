@@ -24,8 +24,6 @@ scrape_configs:
       - targets:
         - gnmic-ingestor:7890
         - gnmic-emitter:7890
-        # IOS-XE ingestor (present when using compose-iosxe.yaml)
-        - gnmic-ingestor-iosxe:7890
   - job_name: nats
     static_configs:
       - targets:

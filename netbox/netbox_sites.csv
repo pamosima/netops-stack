@@ -1,0 +1,2 @@
+Name,Status,Facility,Region,Group,Tenant,Description,ID,Slug,Tenant Group,ASNs,ASN Count,Time zone,Physical address,Shipping address,Latitude,Longitude,Comments,Contacts,Tags,Created,Last updated,Devices
+Fabric Site,Active,,EMEA,,,,65,fabric-site,,,0,,,,,,,,,2026-03-16T11:04:42.507281+00:00,2026-03-18T12:50:00.290465+00:00,5

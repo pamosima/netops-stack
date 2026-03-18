@@ -9,7 +9,7 @@ Prometheus in netops-stack stores and serves **metrics** from gNMIc (and optiona
 
 ## Deploy
 
-Started with the base compose; add overlays (e.g. `compose-iosxe.yaml`, `compose-clickstack.yaml`) as needed. Prometheus runs as part of the stack and does not require a separate README beyond this.
+Started with the base compose; add overlays (e.g. `compose-clickstack.yaml`) as needed. Prometheus runs as part of the stack and does not require a separate README beyond this.
 
 ## Related
 

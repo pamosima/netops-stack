@@ -32,7 +32,7 @@ FLOW_TROUBLESHOOT = """# Troubleshooting flow (NetBox + Prometheus + ClickHouse)
 2. **Check metrics (Prometheus)**
    - Use **primary IP** (from NetBox) for Prometheus when device is a hostname.
    - `prometheus_suggest_queries(device)` returns PromQL for gNMIc: target up (`gnmic_target_up{name="<ip>"}`), interface traffic/errors (`...{source="<ip>"}`).
-   - Run `prometheus_query_prometheus` with e.g. `gnmic_target_up{name="198.18.170.201"}` or `rate(interfaces_interface_state_counters_in_octets{source="198.18.170.201"}[5m])`.
+   - Run `prometheus_query_prometheus` with e.g. `gnmic_target_up{name="198.18.170.221"}` or `rate(interfaces_interface_state_counters_in_octets{source="198.18.170.221"}[5m])`.
 
 3. **Check logs (ClickHouse)**
    - Use **primary IP** (from NetBox) for syslog when device is a hostname—syslog is stored by source IP. `clickhouse_query_syslog(host=<primary_ip or device>, since_minutes=15)`.
@@ -50,10 +50,10 @@ FLOW_TROUBLESHOOT = """# Troubleshooting flow (NetBox + Prometheus + ClickHouse)
 
 ## One-shot tools
 
-- **Device:** Use **flow_run_troubleshoot_flow(device, ...)** with a device hostname or IP (e.g. sw11-1, 198.18.170.201). By default it triggers a compare-only pipeline and returns drift vs repo baseline; include **config_diff_live** in full in your report; obey **report_instruction**.
+- **Device:** Use **flow_run_troubleshoot_flow(device, ...)** with a device hostname or IP (e.g. leaf-1, 198.18.170.221). By default it triggers a compare-only pipeline and returns drift vs repo baseline; include **config_diff_live** in full in your report; obey **report_instruction**.
 - **Site:** If the user says e.g. "troubleshoot site-1" or "troubleshoot Building A", use **flow_run_troubleshoot_site_flow(site)** instead. It resolves the site in NetBox, lists devices at that site, and runs the same troubleshoot flow for each device (compare pipeline triggered once, shared for config diffs).
 
-**Note (server version):** The one-shot flow uses **primary IP from NetBox** for the Prometheus up query and for IOS-XE when comparing running config to the backup. Rebuild and restart the MCP server after code changes; then **flow_run_troubleshoot_flow(device="sw11-1")** gives the full picture (NetBox + Prometheus up + syslog + config compare + live diff) in one call.
+**Note (server version):** The one-shot flow uses **primary IP from NetBox** for the Prometheus up query and for IOS-XE when comparing running config to the backup. Rebuild and restart the MCP server after code changes; then **flow_run_troubleshoot_flow(device="leaf-1")** gives the full picture (NetBox + Prometheus up + syslog + config compare + live diff) in one call.
 """
 
 FLOW_APPLY_CONFIG = """# Configuration change flow (GitLab pipeline)

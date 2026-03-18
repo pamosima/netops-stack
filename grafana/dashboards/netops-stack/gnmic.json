@@ -461,7 +461,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
-      "description": "gNMI subscription status for IOS-XE targets: pod switches (198.18.170.201–205), border/leaf (211, 212, 221, 222).",
+      "description": "gNMI subscription status for IOS-XE fabric: border-1/2 and leaf-1/2 (198.18.170.211, 212, 221, 222).",
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -486,7 +486,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
           "editorMode": "code",
-          "expr": "gnmic_target_up{name=~\"198.18.170.(20[1-5]|211|212|221|222)\"}",
+          "expr": "gnmic_target_up{name=~\"198.18.170.(211|212|221|222)\"}",
           "legendFormat": "{{name}}",
           "range": true,
           "refId": "A"
@@ -527,7 +527,7 @@
         {
           "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
           "editorMode": "code",
-          "expr": "rate({__name__=~\".*in_octets\", source=~\"198.18.170.(20[1-5]|211|212|221|222)\"}[5m]) * 8",
+          "expr": "rate({__name__=~\".*in_octets\", source=~\"198.18.170.(211|212|221|222)\"}[5m]) * 8",
           "legendFormat": "{{source}} {{interface_name}}",
           "range": true,
           "refId": "A"
@@ -551,7 +551,7 @@
         "multi": true,
         "name": "target",
         "options": [],
-        "query": "198.18.170.201,198.18.170.202,198.18.170.203,198.18.170.204,198.18.170.205,198.18.170.211,198.18.170.212,198.18.170.221,198.18.170.222",
+        "query": "198.18.170.211,198.18.170.212,198.18.170.221,198.18.170.222",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"

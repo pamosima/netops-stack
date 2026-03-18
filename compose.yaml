@@ -15,10 +15,9 @@ services:
   gnmic-ingestor:
     image: ghcr.io/openconfig/gnmic:0.42.0
     ports:
-      - 9804:9804
+      - 9804:7890
     volumes:
       - ./gnmic/gnmic-ingestor.yaml:/app/gnmic.yaml:ro
-      - /var/run/docker.sock:/var/run/docker.sock # allows docker loader in gnmic config, only needed for demo containerlab networks
     command: ["--config", "/app/gnmic.yaml", "--log", "subscribe"]
     networks:
       - gnp-mgmt
@@ -26,7 +25,7 @@ services:
   gnmic-emitter:
     image: ghcr.io/openconfig/gnmic:0.42.0
     ports:
-      - 9806:9804
+      - 9806:7890
     volumes:
       - ./gnmic/gnmic-emitter.yaml:/app/gnmic.yaml:ro
     command: '--config /app/gnmic.yaml --log subscribe'

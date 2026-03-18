@@ -24,7 +24,7 @@ docker compose -f compose.yaml -f compose-clickstack.yaml up -d
 With syslog and full stack:
 
 ```bash
-docker compose -f compose.yaml -f compose-iosxe.yaml -f compose-ipfix.yaml \
+docker compose -f compose.yaml -f compose-ipfix.yaml \
   -f compose-clickstack.yaml -f compose-syslog.yaml up -d
 ```
 

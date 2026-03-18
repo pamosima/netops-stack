@@ -1,192 +1,110 @@
+# gNMIc ingestor for Cisco IOS-XE (C9k) — aligns with CML BGP-EVPN lab (border/leaf).
+# Targets: management IPs and gNMI port (57400). Add more entries as needed.
+# Production: use env or file-based secrets for passwords; do not commit real credentials.
 ---
-username: admin
+# Lab credential only; for production use env or secrets (do not commit real passwords).
+username: netadmin
+password: C1sco12345
 log: true
 
-loader:
-  type: docker
-  filters:
-    - containers:
-        - label=clab-node-kind: nokia_srlinux
-      config:
-        skip-verify: true
-        insecure: false
-        password: NokiaSrl1!
-        subscriptions:
-          - srl-if-states
-          - srl-if-stats
-          - srl-bgp
-          - srl-system-performance
-          - srl-routes
-          - srl-bridge
-          - srl-apps
-          - srl-net-instance
-    - containers:
-        - label=clab-node-kind: arista_ceos
-      port: "6030"
-      config:
-        skip-verify: false
-        insecure: true
-        password: admin
-        subscriptions:
-          - eos-if-states
-          - eos-if-stats
+# border-1, border-2, leaf-1, leaf-2 (198.18.170.x from CML). c8k-core01 often has no gNMI.
+#  198.18.170.200:  # c8k-core01 — uncomment if your image supports gnmi-yang/gnxi
+#    port: "57400"
+#    skip-verify: true
+#    insecure: true
+#    subscriptions: [iosxe-if-state-sample, iosxe-if-stats, iosxe-system]
+targets:
+  198.18.170.211:
+    port: "57400"
+    skip-verify: true
+    insecure: true
+    password: C1sco12345
+    subscriptions:
+      - iosxe-if-state-sample
+      - iosxe-if-stats
+      - iosxe-system
+  198.18.170.212:
+    port: "57400"
+    skip-verify: true
+    insecure: true
+    password: C1sco12345
+    subscriptions:
+      - iosxe-if-state-sample
+      - iosxe-if-stats
+      - iosxe-system
+  198.18.170.221:
+    port: "57400"
+    skip-verify: true
+    insecure: true
+    password: C1sco12345
+    subscriptions:
+      - iosxe-if-state-sample
+      - iosxe-if-stats
+      - iosxe-system
+  198.18.170.222:
+    port: "57400"
+    skip-verify: true
+    insecure: true
+    password: C1sco12345
+    subscriptions:
+      - iosxe-if-state-sample
+      - iosxe-if-stats
+      - iosxe-system
 
 subscriptions:
-  # srl
-  srl-system-performance:
+  # Interface state via SAMPLE (IOS-XE rejects ON_CHANGE with filter-type for these paths).
+  iosxe-if-state-sample:
     mode: stream
     stream-mode: sample
-    sample-interval: 15s
+    sample-interval: 30s
     paths:
-      - /platform/control[slot=*]/cpu[index=all]/total
-      - /platform/control[slot=*]/memory
+      - /interfaces/interface[name=*]/state
     outputs:
-      - nats-srl-out
-  srl-if-states:
-    mode: stream
-    stream-mode: on_change
-    heartbeat-interval: 15s
-    paths:
-      - /interface[name=ethernet-1/*]/oper-state
-    outputs:
-      - nats-srl-out
-  srl-if-stats:
-    mode: stream
-    stream-mode: sample
-    sample-interval: 15s
-    paths:
-      - /interface[name=ethernet-1/*]/statistics
-      - /interface[name=ethernet-1/*]/traffic-rate
-    outputs:
-      - nats-srl-out
-  srl-routes:
-    mode: stream
-    stream-mode: sample
-    sample-interval: 15s
-    paths:
-      - /network-instance[name=*]/route-table/ipv4-unicast/statistics/
-      - /network-instance[name=*]/route-table/ipv6-unicast/statistics/
-    outputs:
-      - nats-srl-out
-  srl-bgp:
-    mode: stream
-    stream-mode: sample
-    sample-interval: 15s
-    paths:
-      - /network-instance[name=*]/protocols/bgp/statistics
-    outputs:
-      - nats-srl-out
-  srl-bridge:
-    mode: stream
-    stream-mode: sample
-    sample-interval: 15s
-    paths:
-      - /network-instance[name=*]/bridge-table/statistics/
-    outputs:
-      - nats-srl-out
-  srl-apps:
-    mode: stream
-    stream-mode: sample
-    sample-interval: 15s
-    paths:
-      - /system/app-management/application[name=*]
-    outputs:
-      - nats-srl-out
-  srl-net-instance:
-    mode: stream
-    stream-mode: on_change
-    heartbeat-interval: 15s
-    paths:
-      - /network-instance[name=*]/oper-state
-    outputs:
-      - nats-srl-out
+      - nats-iosxe-out
 
-  # eos
-  eos-if-stats:
+  iosxe-if-stats:
     mode: stream
     stream-mode: sample
     sample-interval: 15s
     paths:
       - /interfaces/interface[name=*]/state/counters
     outputs:
-      - nats-eos-out
+      - nats-iosxe-out
 
-  eos-if-states:
+  # Optional: system memory (and CPU if path supported by image).
+  # Use OpenConfig module prefix; without it gNMIc may not send this subscription (only interface subs appear in logs).
+  iosxe-system:
     mode: stream
-    stream-mode: on_change
-    # heartbeat-interval: 60s
-      #stream-mode: sample
-      #sample-interval: 5s
+    stream-mode: sample
+    sample-interval: 15s
     paths:
-      - /interfaces/interface[name=*]/state/admin-status
-      - /interfaces/interface[name=*]/state/oper-status
-      - /interfaces/interface[name=*]/state/last-change
-      - /interfaces/interface[name=*]/state/mtu
+      - /openconfig-system:system/memory/state
+      # - /openconfig-system:system/cpus/cpu[index=*]/state  # Uncomment if IOS-XE supports OpenConfig CPU
     outputs:
-      - nats-eos-out
+      - nats-iosxe-out
+
+  # Optional: BGP (uncomment if your IOS-XE image supports this path)
+  # iosxe-bgp:
+  #   mode: stream
+  #   stream-mode: sample
+  #   sample-interval: 15s
+  #   paths:
+  #     - /network-instances/network-instance[name=*]/protocols/protocol[name=*]/bgp/state
+  #   outputs:
+  #     - nats-iosxe-out
 
 outputs:
-  nats-srl-out:
+  nats-iosxe-out:
     type: jetstream
-    name: gnmic-ingress-srl
+    name: gnmic-ingress-iosxe
     address: nats:4222
-    stream: srl
+    stream: iosxe
     create-stream:
-      description: srl telemetry data to be processed mid pipeline
+      description: IOS-XE telemetry for C9k
       subjects: []
       storage: file
       max-msgs: 3000000
-      # max-bytes:
-      # max-age:
-      # max-msg-size:
     subject-format: subscription.target
-    # tls:
-    #   # string, path to the CA certificate file,
-    #   # this will be used to verify the clients certificates when `skip-verify` is false
-    #   ca-file:
-    #   # string, client certificate file.
-    #   cert-file:
-    #   # string, client key file.
-    #   key-file:
-    #   # boolean, if true, the client will not verify the server
-    #   # certificate against the available certificate chain.
-    #   skip-verify: false
-    connect-time-wait: 2s
-    format: event
-    split-events: false
-    override-timestamps: false
-    num-workers: 1
-    write-timeout: 5s
-    debug: false
-    buffer-size: 0
-    enable-metrics: true
-    event-processors: []
-
-  nats-eos-out:
-    type: jetstream
-    name: gnmic-ingress-eos
-    address: nats:4222
-    stream: eos
-    create-stream:
-      description: eos telemetry data to be processed mid pipeline
-      subjects: []
-      storage: file
-      max-msgs: 3000000
-      # max-bytes:
-      # max-age:
-      # max-msg-size:
-    subject-format: subscription.target
-    # tls:
-    #   # string, path to the CA certificate file,
-    #   # this will be used to verify the clients certificates when `skip-verify` is false
-    #   ca-file:
-    #   # string, client certificate file.
-    #   cert-file:
-    #   # string, client key file.
-    #   key-file:
-    #   # boolean, if true, the client will not verify the server
-    #   # certificate against the available certificate chain.
-    #   skip-verify: false
     connect-time-wait: 2s
     format: event
     split-events: false
@@ -201,28 +119,6 @@ outputs:
 api-server:
   address: :7890
   timeout: 10s
-  # tls:
-  #   # string, path to the CA certificate file,
-  #   # this certificate is used to verify the clients certificates.
-  #   ca-file:
-  #   # string, server certificate file.
-  #   cert-file:
-  #   # string, server key file.
-  #   key-file:
-  #   # string, one of `"", "request", "require", "verify-if-given", or "require-verify" 
-  #   #  - request:         The server requests a certificate from the client but does not 
-  #   #                     require the client to send a certificate. 
-  #   #                     If the client sends a certificate, it is not required to be valid.
-  #   #  - require:         The server requires the client to send a certificate and does not 
-  #   #                     fail if the client certificate is not valid.
-  #   #  - verify-if-given: The server requests a certificate, 
-  #   #                     does not fail if no certificate is sent. 
-  #   #                     If a certificate is sent it is required to be valid.
-  #   #  - require-verify:  The server requires the client to send a valid certificate.
-  #   #
-  #   # if no ca-file is present, `client-auth` defaults to ""`
-  #   # if a ca-file is set, `client-auth` defaults to "require-verify"`
-  # client-auth: ""
   enable-metrics: true
   debug: false
   healthz-disable-logging: true

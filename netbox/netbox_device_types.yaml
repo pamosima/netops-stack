@@ -1,0 +1,231 @@
+manufacturer: Cisco
+model: C9KV-UADP-8P
+slug: c9kv-uadp-8p
+description: ''
+default_platform: ios-xe
+part_number: C9KV-UADP-8P
+u_height: 1.0
+is_full_depth: true
+subdevice_role: null
+airflow: null
+weight: null
+weight_unit: null
+comments: '[Cisco Catalyst 9300 Series Switches Data Sheet](https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9300-series-switches/nb-06-cat9300-ser-data-sheet-cte-en.html)'
+console-ports:
+- name: con 0
+  type: rj-45
+  label: ''
+  description: ''
+interfaces:
+- name: GigabitEthernet0/0
+  type: 1000base-t
+  enabled: true
+  mgmt_only: true
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: null
+  poe_type: null
+  rf_role: null
+- name: GigabitEthernet1/0/1
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: null
+  poe_type: null
+  rf_role: null
+- name: GigabitEthernet1/0/2
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: null
+  poe_type: null
+  rf_role: null
+- name: GigabitEthernet1/0/3
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: null
+  poe_type: null
+  rf_role: null
+- name: GigabitEthernet1/0/4
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: null
+  poe_type: null
+  rf_role: null
+- name: GigabitEthernet1/0/5
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: null
+  poe_type: null
+  rf_role: null
+- name: GigabitEthernet1/0/6
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: null
+  poe_type: null
+  rf_role: null
+- name: GigabitEthernet1/0/7
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: null
+  poe_type: null
+  rf_role: null
+- name: GigabitEthernet1/0/8
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: null
+  poe_type: null
+  rf_role: null
+module-bays:
+- name: FAN 1
+  label: ''
+  position: ''
+  description: ''
+- name: FAN 2
+  label: ''
+  position: ''
+  description: ''
+- name: FAN 3
+  label: ''
+  position: ''
+  description: ''
+- name: Network Module
+  label: ''
+  position: '1'
+  description: ''
+- name: PS-A
+  label: ''
+  position: A
+  description: ''
+- name: PS-B
+  label: ''
+  position: B
+  description: ''
+---
+manufacturer: Cisco
+model: Catalyst 8000v
+slug: cisco-c8000v
+description: ''
+default_platform: null
+part_number: C8000v
+u_height: 1.0
+is_full_depth: true
+subdevice_role: null
+airflow: null
+weight: 20.25
+weight_unit: lb
+comments: '[Cisco Catalyst 8000V Edge Software Data Sheet](https://www.cisco.com/c/en/us/products/collateral/routers/catalyst-8000v-edge-software/catalyst-8000v-edge-software-ds.html)'
+console-ports:
+- name: con 0
+  type: rj-45
+  label: ''
+  description: ''
+- name: usb
+  type: usb-micro-b
+  label: ''
+  description: ''
+power-ports:
+- name: P0
+  type: iec-60320-c14
+  maximum_draw: 750
+  allocated_draw: null
+  label: ''
+  description: ''
+- name: P1
+  type: iec-60320-c14
+  maximum_draw: 750
+  allocated_draw: null
+  label: ''
+  description: ''
+interfaces:
+- name: GigabitEthernet1
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: ''
+  poe_type: ''
+  rf_role: ''
+- name: GigabitEthernet2
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: ''
+  poe_type: ''
+  rf_role: ''
+- name: GigabitEthernet3
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: ''
+  poe_type: ''
+  rf_role: ''
+- name: GigabitEthernet4
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: ''
+  poe_type: ''
+  rf_role: ''
+- name: GigabitEthernet5
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: ''
+  poe_type: ''
+  rf_role: ''
+- name: GigabitEthernet6
+  type: 1000base-t
+  enabled: true
+  mgmt_only: false
+  label: ''
+  description: ''
+  bridge: null
+  poe_mode: ''
+  poe_type: ''
+  rf_role: ''
