@@ -1,6 +1,9 @@
 .env
 .netops-stack.clab.yml.bak
 
+# macOS
+.DS_Store
+
 # Local notes / exports (device configs, scratch docs)
 docs/
 
