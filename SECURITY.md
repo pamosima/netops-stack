@@ -54,12 +54,10 @@ Maintainers: update repository URLs in this file if you fork or change the canon
 
 ## Branch protection (repository administrators)
 
-After enabling CodeQL and other checks, configure **`main`** protection:
-
 1. **Settings → Branches → Branch protection rules → Add rule** (branch name pattern `main`).
-2. Enable **Require a pull request before merging** (recommended: **1** approval).
+2. Enable **Require a pull request before merging** (**1** approval).
 3. Enable **Dismiss stale pull request approvals when new commits are pushed**.
-4. Enable **Require status checks to pass** and require **`CodeQL`** (and any other required jobs).
+4. Enable **Require status checks to pass** and require the **CodeQL** job (e.g. **Analyze (python)**).
 5. Optionally: **Require branches to be up to date before merging**, **Do not allow bypassing**.
 
 See also: [OpenSSF Scorecard](https://scorecard.dev/) and [GitHub branch protection](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches).
