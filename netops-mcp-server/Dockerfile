@@ -1,6 +1,6 @@
 # NetOps MCP Server — reproducible install via uv.lock; non-root runtime
 # Pinned index digest (docker buildx imagetools inspect python:3.12-slim)
-FROM python:3.12-slim@sha256:7026274c107626d7e940e0e5d6730481a4600ae95d5ca7eb532dd4180313fea9 AS builder
+FROM python:3.14-slim@sha256:584e89d31009a79ae4d9e3ab2fba078524a6c0921cb2711d05e8bb5f628fc9b9 AS builder
 
 WORKDIR /app
 RUN pip install --no-cache-dir uv
@@ -9,7 +9,7 @@ COPY pyproject.toml uv.lock README.md ./
 COPY src ./src
 RUN uv sync --frozen --no-dev
 
-FROM python:3.12-slim@sha256:7026274c107626d7e940e0e5d6730481a4600ae95d5ca7eb532dd4180313fea9
+FROM python:3.14-slim@sha256:584e89d31009a79ae4d9e3ab2fba078524a6c0921cb2711d05e8bb5f628fc9b9
 
 WORKDIR /app
 RUN adduser --disabled-password --gecos "" mcp
