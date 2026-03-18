@@ -14,11 +14,14 @@
 
 ---
 # NetBox (inventory uses NETBOX_URL + NETBOX_TOKEN in ansible/inventory/nb_inventory.yml)
+# Per-host: netbox_device_status (e.g. active, offline). Collect/compare/apply/rollback use group netbox_status_active.
 
 # Device CLI credentials — ANSIBLE_USER, ANSIBLE_PASSWORD from GitLab CI
 ansible_connection: ansible.netcommon.network_cli
 ansible_network_os: cisco.ios.ios
 ansible_user: "{{ lookup('env', 'ANSIBLE_USER') | default('admin', true) }}"
 ansible_password: "{{ lookup('env', 'ANSIBLE_PASSWORD') | default('', true) }}"
-ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=60'
+# Persistent shell: time allowed per CLI command (show run on large configs); CI also sets ANSIBLE_PERSISTENT_COMMAND_TIMEOUT
+ansible_command_timeout: 300
 # ansible_ssh_private_key_file: "{{ lookup('env', 'ANSIBLE_SSH_PRIVATE_KEY_FILE') }}"

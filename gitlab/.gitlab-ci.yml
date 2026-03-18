@@ -28,6 +28,9 @@ default:
 variables:
   ANSIBLE_FORCE_COLOR: "true"
   ANSIBLE_HOST_KEY_CHECKING: "false"
+  # network_cli default command timeout is ~30s; show running-config on busy/large configs needs more
+  ANSIBLE_PERSISTENT_COMMAND_TIMEOUT: "300"
+  ANSIBLE_PERSISTENT_CONNECT_TIMEOUT: "90"
 
 workflow:
   rules:
@@ -228,6 +231,8 @@ rollback_apply:
     INVENTORY: ./inventory/nb_inventory.yml
   before_script:
     - cd ./ansible/
+    # GitLab checkout is world-writable; Ansible ignores ansible.cfg unless dir is not o+w
+    - chmod og-w . 2>/dev/null || true
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: $CI_PIPELINE_SOURCE == "api" && $PIPELINE_TYPE == "collect"
@@ -243,6 +248,7 @@ rollback_apply:
     INVENTORY: ./inventory/nb_inventory.yml
   before_script:
     - cd ./ansible/
+    - chmod og-w . 2>/dev/null || true
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
       when: never
@@ -268,6 +274,7 @@ rollback_apply:
     INVENTORY: ./inventory/nb_inventory.yml
   before_script:
     - cd ./ansible/
+    - chmod og-w . 2>/dev/null || true
   rules:
     - if: $CI_PIPELINE_SOURCE == "api" && $DRY_RUN_PIPELINE == "true"
     - if: $CI_PIPELINE_SOURCE == "api" && $PIPELINE_TYPE == "apply"
@@ -281,6 +288,7 @@ rollback_apply:
     INVENTORY: ./inventory/nb_inventory.yml
   before_script:
     - cd ./ansible/
+    - chmod og-w . 2>/dev/null || true
   rules:
     - if: $CI_PIPELINE_SOURCE == "api" && $ROLLBACK_PIPELINE == "true"
     - if: $CI_PIPELINE_SOURCE == "api" && $PIPELINE_TYPE == "rollback"

@@ -26,6 +26,7 @@ site_data: true
 virtual_chassis_name: true
 group_names_raw: true
 
+# Only sync devices you expect to automate (active). Mark maintenance/spares as Offline in NetBox.
 query_filters:
   - status: active
 
@@ -33,7 +34,14 @@ group_by:
   - sites
   - device_roles
 
+# Groups netbox_status_active, netbox_status_offline, … (playbooks use netbox_status_active)
+keyed_groups:
+  - prefix: netbox_status
+    key: status.value
+
 compose:
   primary_ip: primary_ip.address
   # Map NetBox platform slug to Ansible network OS (e.g. ios, cisco-ios -> cisco.ios.ios)
   ansible_network_os: platform.slug
+  # NetBox DCIM status slug: active, offline, planned, staged, failed, inventory, decommissioning
+  netbox_device_status: status.value

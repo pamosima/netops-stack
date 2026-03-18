@@ -1,6 +1,9 @@
 .env
 .netops-stack.clab.yml.bak
 
+# Local notes / exports (device configs, scratch docs)
+docs/
+
 # Python
 __pycache__/
 *.py[cod]

@@ -14,6 +14,7 @@
 # or implied.
 
 ---
+# Targets NetBox **active** devices only (netbox_status_active).
 # Apply desired config from ansible/configs/desired/<hostname>.txt to IOS-XE devices.
 # Used when troubleshooting (e.g. with MCP) finds a config change: put the desired
 # config in the repo, then run via GitLab pipeline — dry-run first, manual apply after review.
@@ -26,7 +27,7 @@
 # Limit:   ansible-playbook ... apply_config.yml -l sw11-1 ...
 
 - name: Apply desired config to devices
-  hosts: all
+  hosts: netbox_status_active
   gather_facts: false
   environment:
     ANSIBLE_HOST_KEY_CHECKING: 'false'

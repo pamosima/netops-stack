@@ -14,6 +14,7 @@
 # or implied.
 
 ---
+# Targets NetBox **active** devices only (netbox_status_active). Offline devices are not compared.
 # Fetch running config from devices and compare to the baseline saved in configs/baseline/<hostname>.txt.
 # Baseline = ansible/configs/baseline/<host>.txt (from repo or from collect artifact). Compare playbook
 # fetches running config via SSH and diffs against that baseline.
@@ -26,10 +27,12 @@
 # Or: ./run-compare-local.sh
 
 - name: Compare running config to collected baseline
-  hosts: all
+  hosts: netbox_status_active
   gather_facts: false
   environment:
     ANSIBLE_HOST_KEY_CHECKING: 'false'
+    ANSIBLE_PERSISTENT_COMMAND_TIMEOUT: "{{ (lookup('env', 'ANSIBLE_PERSISTENT_COMMAND_TIMEOUT') | default('300', true)) | trim | string }}"
+    ANSIBLE_PERSISTENT_CONNECT_TIMEOUT: "{{ (lookup('env', 'ANSIBLE_PERSISTENT_CONNECT_TIMEOUT') | default('90', true)) | trim | string }}"
 
   vars:
     ansible_connection: ansible.netcommon.network_cli

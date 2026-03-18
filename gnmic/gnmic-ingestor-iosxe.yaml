@@ -65,6 +65,42 @@ targets:
       - iosxe-if-state-sample
       - iosxe-if-stats
       - iosxe-system
+  198.18.170.211:
+    port: "57400"
+    skip-verify: true
+    insecure: true
+    password: C1sco12345
+    subscriptions:
+      - iosxe-if-state-sample
+      - iosxe-if-stats
+      - iosxe-system
+  198.18.170.212:
+    port: "57400"
+    skip-verify: true
+    insecure: true
+    password: C1sco12345
+    subscriptions:
+      - iosxe-if-state-sample
+      - iosxe-if-stats
+      - iosxe-system
+  198.18.170.221:
+    port: "57400"
+    skip-verify: true
+    insecure: true
+    password: C1sco12345
+    subscriptions:
+      - iosxe-if-state-sample
+      - iosxe-if-stats
+      - iosxe-system
+  198.18.170.222:
+    port: "57400"
+    skip-verify: true
+    insecure: true
+    password: C1sco12345
+    subscriptions:
+      - iosxe-if-state-sample
+      - iosxe-if-stats
+      - iosxe-system
 
 subscriptions:
   # Interface state via SAMPLE (IOS-XE rejects ON_CHANGE with filter-type for these paths).

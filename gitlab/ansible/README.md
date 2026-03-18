@@ -6,7 +6,7 @@ Config collection (and later diff/apply) for the netops-stack orchestrator. In t
 
 | Path | Purpose |
 |------|---------|
-| `playbooks/collect_configs.yml` | Collect running config from all NetBox devices; write to `configs/baseline/<hostname>.txt`. |
+| `playbooks/collect_configs.yml` | Collect running config from **active** NetBox devices; write to `configs/baseline/<hostname>.txt`. |
 | `inventory/nb_inventory.yml` | NetBox dynamic inventory (plugin config). |
 | `group_vars/all.yml` | Default connection vars (network_cli, cisco.ios.ios, user from env). |
 | `requirements.yml` | Galaxy collections: `cisco.ios`, `ansible.netcommon`, `netbox.netbox`. |
@@ -18,9 +18,11 @@ Config collection (and later diff/apply) for the netops-stack orchestrator. In t
    ansible-galaxy collection install -r ansible/requirements.yml
    ```
 
-2. **NetBox:** Devices must have **status: active** and a **primary IP** (used as `ansible_host`). Set **platform** (e.g. Cisco IOS) in NetBox so the correct network OS is used, or rely on `group_vars/all.yml` default (`cisco.ios.ios`).
+2. **NetBox device status:** Set devices you automate to **Active**; use **Offline** (or planned/staged) for spares, maintenance, or decommissioned gear so they are skipped. The inventory filters to `status: active`, and playbooks target the `netbox_status_active` group. Each host has `netbox_device_status` (slug, e.g. `active`, `offline`) for ad-hoc use. To include multiple statuses in inventory, adjust `query_filters` in `inventory/nb_inventory.yml` and keep playbooks on `netbox_status_active` unless you intentionally want to automate other statuses.
 
-3. **Environment variables** (never commit):
+3. **NetBox:** Active devices need a **primary IP** (used as `ansible_host`). Set **platform** (e.g. Cisco IOS) in NetBox so the correct network OS is used, or rely on `group_vars/all.yml` default (`cisco.ios.ios`).
+
+4. **Environment variables** (never commit):
    - **NetBox:** Plugin reads `NETBOX_URL` or `NETBOX_API` and `NETBOX_TOKEN` from the environment. Optional: `NETBOX_VERIFY_SSL=false` for self-signed.
    - **SSH:** `ANSIBLE_USER`, and either `ANSIBLE_PASSWORD` or `ANSIBLE_SSH_PRIVATE_KEY_FILE`.
 

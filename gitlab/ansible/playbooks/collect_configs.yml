@@ -15,6 +15,7 @@
 
 ---
 # Collect running config from network devices and write to configs/baseline/<hostname>.txt
+# Targets NetBox status **active** only (hosts: netbox_status_active). Offline/planned/etc. are excluded.
 # Inventory: NetBox only — use -i ansible/inventory/nb_inventory.yml (see LTROPS-2341 pattern).
 # SSH credentials: pass at run time (see https://netboxlabs.com/blog/getting-started-with-network-automation-netbox-ansible/)
 #   Local: ansible-playbook ... -u admin -k   (prompts for password)
@@ -27,10 +28,12 @@
 #   ansible-playbook ansible/playbooks/collect_configs.yml -i ansible/inventory/nb_inventory.yml -l core-01 -u admin -k
 
 - name: Collect device running configs
-  hosts: all
+  hosts: netbox_status_active
   gather_facts: false
   environment:
     ANSIBLE_HOST_KEY_CHECKING: 'false'
+    ANSIBLE_PERSISTENT_COMMAND_TIMEOUT: "{{ (lookup('env', 'ANSIBLE_PERSISTENT_COMMAND_TIMEOUT') | default('300', true)) | trim | string }}"
+    ANSIBLE_PERSISTENT_CONNECT_TIMEOUT: "{{ (lookup('env', 'ANSIBLE_PERSISTENT_CONNECT_TIMEOUT') | default('90', true)) | trim | string }}"
 
   vars:
     # Force network_cli and IOS so the right connection and modules are used (override any inventory default)
