@@ -1,4 +1,5 @@
 # NetOps MCP Server — reproducible install via uv.lock; non-root runtime
+# Policy: Python 3.12 only (Dependabot ignores 3.13+ for this image).
 # Pinned index digest (docker buildx imagetools inspect python:3.12-slim)
 FROM python:3.12-slim@sha256:7026274c107626d7e940e0e5d6730481a4600ae95d5ca7eb532dd4180313fea9 AS builder
 

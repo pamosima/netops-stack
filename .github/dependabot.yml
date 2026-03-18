@@ -59,6 +59,7 @@ updates:
       - "security"
       - "docker"
 
+  # Stay on Python 3.12 for MCP + exporter; block Dependabot PRs to 3.13/3.14+ until explicitly upgraded.
   - package-ecosystem: "docker"
     directory: "/netops-mcp-server"
     schedule:
@@ -68,6 +69,11 @@ updates:
       - "dependencies"
       - "security"
       - "docker"
+    ignore:
+      - dependency-name: "python"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      - dependency-name: "python"
+        versions: ["3.13-slim", "3.14-slim", "3.15-slim", "3.16-slim"]
 
   - package-ecosystem: "docker"
     directory: "/clickhouse"
@@ -78,3 +84,8 @@ updates:
       - "dependencies"
       - "security"
       - "docker"
+    ignore:
+      - dependency-name: "python"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      - dependency-name: "python"
+        versions: ["3.13-slim", "3.14-slim", "3.15-slim", "3.16-slim"]
