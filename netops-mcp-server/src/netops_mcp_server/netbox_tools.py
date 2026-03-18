@@ -17,8 +17,11 @@ or implied.
 ---
 NetBox DCIM/IPAM tools (read + search only for netops use cases).
 """
+import logging
 import os
 from typing import Any, Dict, List, Optional, Union
+
+_log = logging.getLogger(__name__)
 
 import requests
 
@@ -75,6 +78,7 @@ def _wrap(f, *a, **k):
     try:
         return {"success": True, "data": f(*a, **k)}
     except Exception as e:
+        _log.debug("NetBox tool error: %s", e, exc_info=True)
         return {"success": False, "error": str(e)}
 
 

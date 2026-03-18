@@ -56,6 +56,8 @@ Server listens on `http://0.0.0.0:8010`. Use transport `streamable-http` and URL
 
 ## Run with Docker
 
+The image is built from **`uv.lock`** (reproducible deps) and a digest-pinned `python:3.12-slim` base. After changing `pyproject.toml`, run **`uv lock`** and commit `uv.lock`.
+
 ```bash
 docker build -t netops-mcp-server .
 docker run --env-file .env -p 8010:8010 netops-mcp-server

@@ -1,0 +1,80 @@
+# Dependabot — weekly updates with security-focused labels
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+#
+# If `uv` is unsupported (older GHES), replace the netops-mcp-server `uv` block with:
+#   package-ecosystem: pip
+#   directory: "/netops-mcp-server"
+# and add a committed requirements.txt from `uv export --frozen`.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "security"
+      - "github-actions"
+
+  - package-ecosystem: "pip"
+    directory: "/gitlab"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "security"
+      - "python"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: "pip"
+    directory: "/clickhouse"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "security"
+      - "python"
+
+  - package-ecosystem: "uv"
+    directory: "/netops-mcp-server"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "security"
+      - "python"
+      - "uv"
+
+  - package-ecosystem: "docker"
+    directory: "/gitlab"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "security"
+      - "docker"
+
+  - package-ecosystem: "docker"
+    directory: "/netops-mcp-server"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "security"
+      - "docker"
+
+  - package-ecosystem: "docker"
+    directory: "/clickhouse"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "security"
+      - "docker"

@@ -197,9 +197,14 @@ docker compose down
 
 ## Security considerations
 
+See **[SECURITY.md](SECURITY.md)** for vulnerability reporting, supported versions, and branch-protection guidance (OpenSSF-aligned). This repo uses **CodeQL** (`.github/workflows/codeql.yml`) and **Dependabot** (`.github/dependabot.yml`).
+
 - No hardcoded credentials; use `.env` and GitLab CI/CD variables
 - Store `ANSIBLE_USER`, `ANSIBLE_PASSWORD`, `GITLAB_PUSH_TOKEN`, NetBox tokens in CI variables (masked)
+- Python deps: lockfiles — `netops-mcp-server/uv.lock`, compiled `gitlab/requirements.txt` / `clickhouse/requirements-export.txt`; Docker base images pinned by digest
 - For production: use secrets management, restrict network access, and follow [gitlab/README.md](gitlab/README.md) hardening
+
+**After CodeQL / Dependabot run:** resolve open alerts (`gh api repos/<owner>/<repo>/code-scanning/alerts`, `.../dependabot/alerts`) or merge safe update PRs.
 
 ## Kudos
 

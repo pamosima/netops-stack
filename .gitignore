@@ -14,8 +14,8 @@ __pycache__/
 .venv/
 venv/
 
-# netops-mcp-server (runs in Docker; lockfile not needed in repo)
-netops-mcp-server/uv.lock
+# pip-compile cache (local)
+.pip-tools-cache/
 
 clab-netops-stack/
 clickhouse/data
