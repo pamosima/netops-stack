@@ -7,9 +7,9 @@ Observability and orchestration for **network automation**: gNMIc (gNMI streamin
 
 ## Live Demo
 
-![AIOps demo](_img/aiops-demo_short.gif)
+![NetOps Assistant demo — fabric site EVPN troubleshoot](_img/aiops-demo_short.gif)
 
-*Demo: **"Troubleshoot why client at site-1 has no connectivity."** The NetOps Assistant uses the troubleshoot-site flow: resolves the site in NetBox, finds all devices at that site, then for each device runs NetBox info, Prometheus metrics (up/down), syslog (ClickHouse), and config drift. One prompt gives a full site health view to pinpoint connectivity issues.*
+*Demo: **"Clients at the fabric site report connectivity issues."** The NetOps Assistant runs the **troubleshoot-site** flow (NetBox, Prometheus, syslog, config drift), then drills into **border-1** vs **border-2** and leaves. It isolates an **EVPN/VXLAN** fault—wrong **VNI mapping** on **border-1** (`vlan configuration 965` / NVE)—and walks through **GitLab apply** (dry-run → apply) and post-checks until the fabric is healthy again.*
 
 ## Description
 
