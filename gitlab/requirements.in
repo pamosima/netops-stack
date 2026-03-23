@@ -1,6 +1,6 @@
 # Source for locked requirements.txt — regenerate:
 #   pip-compile requirements.in -o requirements.txt --strip-extras
-ansible-core==2.20.3
+ansible-core==2.20.4
 paramiko>=3.0.0
 pynetbox>=7.0.0
 requests>=2.28.0
