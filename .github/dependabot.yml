@@ -1,5 +1,9 @@
-# Dependabot — weekly updates with security-focused labels
+# Dependabot — weekly version updates
 # https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+#
+# Labels: omit `labels` so GitHub uses the default `dependencies` label (created if missing).
+# To use custom labels (`security`, `docker`, etc.), create them in the repo first, then
+# add a `labels:` block per ecosystem.
 #
 # If `uv` is unsupported (older GHES), replace the netops-mcp-server `uv` block with:
 #   package-ecosystem: pip
@@ -12,20 +16,12 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    labels:
-      - "dependencies"
-      - "security"
-      - "github-actions"
 
   - package-ecosystem: "pip"
     directory: "/gitlab"
     schedule:
       interval: "weekly"
       day: "monday"
-    labels:
-      - "dependencies"
-      - "security"
-      - "python"
     open-pull-requests-limit: 10
 
   - package-ecosystem: "pip"
@@ -33,31 +29,18 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    labels:
-      - "dependencies"
-      - "security"
-      - "python"
 
   - package-ecosystem: "uv"
     directory: "/netops-mcp-server"
     schedule:
       interval: "weekly"
       day: "monday"
-    labels:
-      - "dependencies"
-      - "security"
-      - "python"
-      - "uv"
 
   - package-ecosystem: "docker"
     directory: "/gitlab"
     schedule:
       interval: "weekly"
       day: "monday"
-    labels:
-      - "dependencies"
-      - "security"
-      - "docker"
 
   # Stay on Python 3.12 for MCP + exporter; block Dependabot PRs to 3.13/3.14+ until explicitly upgraded.
   - package-ecosystem: "docker"
@@ -65,10 +48,6 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    labels:
-      - "dependencies"
-      - "security"
-      - "docker"
     ignore:
       - dependency-name: "python"
         update-types: ["version-update:semver-major", "version-update:semver-minor"]
@@ -80,10 +59,6 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    labels:
-      - "dependencies"
-      - "security"
-      - "docker"
     ignore:
       - dependency-name: "python"
         update-types: ["version-update:semver-major", "version-update:semver-minor"]
