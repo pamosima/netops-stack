@@ -5,7 +5,7 @@ description = "Combined MCP server for netops-stack: NetBox, Prometheus, ClickHo
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "fastmcp>=2.0",
+    "fastmcp>=3.2.3",
     "pyjwt>=2.12.0",  # GHSA: override transitive PyJWT (crit header); Dependabot alert #1
     "httpx>=0.24",
     "requests>=2.28",
