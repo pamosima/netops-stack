@@ -4,5 +4,5 @@
 #
 #    pip-compile --output-file=requirements-export.txt --strip-extras requirements-export.in
 #
-prometheus-client==0.24.1
+prometheus-client==0.25.0
     # via -r requirements-export.in
