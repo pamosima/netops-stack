@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements.txt --strip-extras requirements.in
 #
-ansible-core==2.20.4
+ansible-core==2.20.5
     # via -r requirements.in
 bcrypt==5.0.0
     # via paramiko
