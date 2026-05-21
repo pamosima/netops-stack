@@ -43,7 +43,7 @@ pynacl==1.6.2
     # via paramiko
 pynetbox==7.6.1
     # via -r requirements.in
-pytz==2026.1.post1
+pytz==2026.2
     # via -r requirements.in
 pyyaml==6.0.3
     # via ansible-core
