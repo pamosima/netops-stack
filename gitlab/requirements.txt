@@ -21,7 +21,7 @@ cryptography==46.0.7
     #   -r requirements.in
     #   ansible-core
     #   paramiko
-idna==3.11
+idna==3.15
     # via requests
 invoke==2.2.1
     # via paramiko
