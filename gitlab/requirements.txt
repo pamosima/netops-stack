@@ -41,7 +41,7 @@ pycparser==3.0
     # via cffi
 pynacl==1.6.2
     # via paramiko
-pynetbox==7.6.1
+pynetbox==7.7.0
     # via -r requirements.in
 pytz==2026.2
     # via -r requirements.in
