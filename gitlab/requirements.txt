@@ -47,7 +47,7 @@ pytz==2026.2
     # via -r requirements.in
 pyyaml==6.0.3
     # via ansible-core
-requests==2.33.1
+requests==2.34.2
     # via
     #   -r requirements.in
     #   pynetbox
