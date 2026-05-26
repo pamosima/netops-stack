@@ -12,7 +12,7 @@ dependencies = [
     "pygments>=2.20.0",  # CVE-2026-4539 (transitive via pytest rich output)
     "httpx>=0.24",
     "requests>=2.34.0",
-    "netmiko>=4.0",
+    "netmiko>=4.7.0",
     "python-dotenv>=1.0",
 ]
 
