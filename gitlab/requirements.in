@@ -1,7 +1,7 @@
 # Source for locked requirements.txt — regenerate:
 #   pip-compile requirements.in -o requirements.txt --strip-extras
 ansible-core==2.21.1
-cryptography>=48.0.1  # CVE-2026-39892, CVE-2026-34073 (transitive via ansible-core/paramiko)
+cryptography>=50.0.0  # CVE-2026-39892, CVE-2026-34073 (transitive via ansible-core/paramiko)
 paramiko>=5.0.0
 pynetbox>=7.8.0
 requests>=2.34.2
