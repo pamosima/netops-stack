@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=9.0.3", "ruff"]  # CVE-2025-71176 fixed in 9.0.3
+dev = ["pytest>=9.1.1", "ruff"]  # CVE-2025-71176 fixed in 9.0.3
 
 [build-system]
 requires = ["hatchling"]
