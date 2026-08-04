@@ -7,8 +7,9 @@ requires-python = ">=3.10"
 dependencies = [
     "fastmcp>=3.4.2",
     "pyjwt>=2.12.0",  # GHSA: override transitive PyJWT (crit header); Dependabot alert #1
-    "cryptography>=49.0.0",  # CVE-2026-39892, CVE-2026-34073 (transitive via paramiko / PyJWT crypto)
+    "cryptography>=50.0.0",  # CVE-2026-69247 and prior crypto CVEs (transitive via paramiko / PyJWT)
     "python-multipart>=0.0.32",  # CVE-2026-40347 (transitive via Starlette/FastMCP)
+    "starlette>=1.3.1",  # CVE-2026-54283, CVE-2026-48818 (transitive via FastMCP / sse-starlette)
     "pygments>=2.20.0",  # CVE-2026-4539 (transitive via pytest rich output)
     "httpx>=0.24",
     "requests>=2.34.2",
