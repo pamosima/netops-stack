@@ -6,7 +6,7 @@
 # Source: https://github.com/tspuhler/LTROPS-2341 (docker/Dockerfile)
 
 # Pinned multi-arch index digest (docker buildx imagetools inspect ubuntu:24.04)
-FROM ubuntu:26.04@sha256:b7f48194d4d8b763a478a621cdc81c27be222ba2206ca3ca6bc42b49685f3d9e
+FROM ubuntu:26.04@sha256:678c6550cc43645e08669028bc177f50be4e7c5b8cca677067b1914d4afc7a03
 
 ENV DEBIAN_FRONTEND=noninteractive
 
