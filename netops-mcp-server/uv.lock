@@ -869,7 +869,7 @@ wheels = [
 
 [[package]]
 name = "netmiko"
-version = "4.6.0"
+version = "4.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ntc-templates" },
@@ -877,13 +877,12 @@ dependencies = [
     { name = "pyserial" },
     { name = "pyyaml" },
     { name = "rich" },
-    { name = "ruamel-yaml" },
     { name = "scp" },
     { name = "textfsm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/df/0a/4d557ffd4070a47f87c3e07abd28f9fcbdbf799f2a62940168236b4a8d31/netmiko-4.6.0.tar.gz", hash = "sha256:9701bb2c1a15eb2e8074cb2e28ca007c69b9fa52961b83b98c757ead6b80deef", size = 169274, upload-time = "2025-06-26T19:13:17.303Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/68/ef/be7a36c15a8772d3cd3e7e7b289debe8c6b0f1a94a719cea75820c8d68ad/netmiko-4.8.0.tar.gz", hash = "sha256:6264cf8afcbd9c10efb832bacabb9a89370452d522f6c20532d2ad0fefcbdd69", size = 2406838, upload-time = "2026-09-21T22:46:53.341Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/32/5b/9db3cf51785ef0a50f0976704e0776e7136a83cbdf9ed84065184f1fe3e2/netmiko-4.6.0-py3-none-any.whl", hash = "sha256:0c9b7309005d2c8a010b275f3494628cadb1658a8841632131c848074b7cdadb", size = 262873, upload-time = "2025-06-26T19:13:15.764Z" },
+    { url = "https://files.pythonhosted.org/packages/0c/0d/796ef54d10e5af8a9af12a431ad278d74d9139c4888599c2073b2eec814d/netmiko-4.8.0-py3-none-any.whl", hash = "sha256:b4875b36604bcc7a72339f3b4d3091ce545ce0b4629f77f7844413b1c380d0e6", size = 294746, upload-time = "2026-09-21T22:46:51.832Z" },
 ]
 
 [[package]]
@@ -1591,15 +1590,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/13/64/b4d76f227d5c45a7e0b796c674fd81b0a6c4fbd48dc29271857d8219571c/rpds_py-0.30.0-pp311-pypy311_pp73-musllinux_1_2_aarch64.whl", hash = "sha256:dff13836529b921e22f15cb099751209a60009731a68519630a24d61f0b1b30a", size = 573981, upload-time = "2025-11-30T20:24:32.934Z" },
     { url = "https://files.pythonhosted.org/packages/20/91/092bacadeda3edf92bf743cc96a7be133e13a39cdbfd7b5082e7ab638406/rpds_py-0.30.0-pp311-pypy311_pp73-musllinux_1_2_i686.whl", hash = "sha256:1b151685b23929ab7beec71080a8889d4d6d9fa9a983d213f07121205d48e2c4", size = 599782, upload-time = "2025-11-30T20:24:35.169Z" },
     { url = "https://files.pythonhosted.org/packages/d1/b7/b95708304cd49b7b6f82fdd039f1748b66ec2b21d6a45180910802f1abf1/rpds_py-0.30.0-pp311-pypy311_pp73-musllinux_1_2_x86_64.whl", hash = "sha256:ac37f9f516c51e5753f27dfdef11a88330f04de2d564be3991384b2f3535d02e", size = 562191, upload-time = "2025-11-30T20:24:36.853Z" },
-]
-
-[[package]]
-name = "ruamel-yaml"
-version = "0.19.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c7/3b/ebda527b56beb90cb7652cb1c7e4f91f48649fbcd8d2eb2fb6e77cd3329b/ruamel_yaml-0.19.1.tar.gz", hash = "sha256:53eb66cd27849eff968ebf8f0bf61f46cdac2da1d1f3576dd4ccee9b25c31993", size = 142709, upload-time = "2026-01-02T16:50:31.84Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b8/0c/51f6841f1d84f404f92463fc2b1ba0da357ca1e3db6b7fbda26956c3b82a/ruamel_yaml-0.19.1-py3-none-any.whl", hash = "sha256:27592957fedf6e0b62f281e96effd28043345e0e66001f97683aa9a40c667c93", size = 118102, upload-time = "2026-01-02T16:50:29.201Z" },
 ]
 
 [[package]]
