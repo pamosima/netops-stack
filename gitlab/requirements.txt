@@ -53,5 +53,5 @@ requests==2.34.2
     #   pynetbox
 resolvelib==1.0.1
     # via ansible-core
-urllib3==2.7.0
+urllib3==2.8.0
     # via requests
