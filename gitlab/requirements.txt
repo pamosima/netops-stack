@@ -8,7 +8,7 @@ ansible-core==2.21.4
     # via -r requirements.in
 bcrypt==5.0.0
     # via paramiko
-certifi==2026.2.25
+certifi==2026.10.19
     # via requests
 cffi==2.0.0
     # via
