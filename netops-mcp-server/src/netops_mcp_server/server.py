@@ -24,7 +24,7 @@ Tool names are prefixed: netbox_get_sites, prometheus_query_prometheus,
 clickhouse_query_syslog, gitlab_trigger_gitlab_pipeline, ios_xe_show_command, etc.
 
 Environment: load NETBOX_*, PROMETHEUS_*, CLICKHOUSE_*, GITLAB_*, IOS_XE_*
-(e.g. from .env or shell). Optional: MCP_HOST, MCP_PORT (default 0.0.0.0:8010).
+(e.g. from .env or shell). Optional: MCP_HOST, MCP_PORT (default 127.0.0.1:8010).
 LOG_LEVEL=INFO (default) or DEBUG for verbose GitLab trigger logging in Docker.
 """
 from __future__ import annotations
@@ -37,6 +37,7 @@ from dotenv import load_dotenv
 from fastmcp import FastMCP
 
 from . import clickhouse_tools, flow_resources, flow_tools, gitlab_tools, ios_xe_tools, netbox_tools, prometheus_tools
+from .mcp_auth_middleware import McpApiTokenMiddleware
 
 load_dotenv()
 
@@ -50,8 +51,16 @@ logging.basicConfig(
     force=True,
 )
 
-MCP_HOST = os.getenv("MCP_HOST", "0.0.0.0")
+MCP_HOST = os.getenv("MCP_HOST", "127.0.0.1")
 MCP_PORT = int(os.getenv("MCP_PORT", "8010"))
+MCP_API_TOKEN = os.getenv("MCP_API_TOKEN", "").strip()
+
+
+def _is_loopback_host(host: str) -> bool:
+    normalized = (host or "").strip().lower()
+    if normalized in {"127.0.0.1", "localhost", "::1"}:
+        return True
+    return normalized.startswith("127.")
 
 mcp = FastMCP(
     name="NetOps MCP Server",
@@ -79,6 +88,16 @@ Resources (read for AI flows): netops://flows/troubleshoot, netops://flows/confi
 Configure via env: NETBOX_URL, NETBOX_TOKEN, PROMETHEUS_URL, CLICKHOUSE_URL, GITLAB_URL, GITLAB_TOKEN, IOS_XE_USERNAME, IOS_XE_PASSWORD.
 """
 )
+
+# Require explicit API token whenever binding beyond loopback.
+if not _is_loopback_host(MCP_HOST):
+    if not MCP_API_TOKEN:
+        raise RuntimeError(
+            "MCP_API_TOKEN is required when MCP_HOST is not loopback. "
+            "Use loopback (127.0.0.1/localhost) for local-only access, or configure "
+            "a strong token for remote access."
+        )
+    mcp.add_middleware(McpApiTokenMiddleware(MCP_API_TOKEN))
 
 # Register all tools with domain prefix (total < 50)
 for func, name in prometheus_tools.PROMETHEUS_TOOLS:

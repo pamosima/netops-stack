@@ -27,7 +27,7 @@ load_dotenv()
 
 IOS_XE_USERNAME = os.getenv("IOS_XE_USERNAME", "")
 IOS_XE_PASSWORD = os.getenv("IOS_XE_PASSWORD", "")
-IOS_XE_READ_ONLY = os.getenv("IOS_XE_READ_ONLY", "false").lower() in ("true", "1", "yes")
+IOS_XE_READ_ONLY = os.getenv("IOS_XE_READ_ONLY", "true").lower() in ("true", "1", "yes")
 
 
 def _device(host: str) -> dict:

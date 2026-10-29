@@ -19,7 +19,6 @@ ClickHouse tools for syslog and log queries. Read-only.
 """
 import json
 import os
-import re
 from typing import Any, Dict, List, Optional
 
 import httpx
@@ -29,10 +28,12 @@ CLICKHOUSE_USER = os.getenv("CLICKHOUSE_USER", "")
 CLICKHOUSE_PASSWORD = os.getenv("CLICKHOUSE_PASSWORD", "")
 CLICKHOUSE_DATABASE = os.getenv("CLICKHOUSE_DATABASE", "default")
 
-FORBIDDEN_KEYWORDS = re.compile(
-    r"\b(INSERT|UPDATE|DELETE|DROP|TRUNCATE|ALTER|CREATE|GRANT|REVOKE)\b",
-    re.IGNORECASE,
-)
+ALLOWED_QUERY_TEMPLATES = {
+    "recent_syslog",
+    "recent_errors",
+    "severity_stats",
+    "host_activity",
+}
 
 
 def _esc(s: Optional[str]) -> str:
@@ -59,11 +60,9 @@ def _execute_query(sql: str) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def _validate_select(sql: str) -> Optional[str]:
-    if FORBIDDEN_KEYWORDS.search(sql):
-        return "Only SELECT queries are allowed."
-    if not sql.strip().upper().startswith("SELECT"):
-        return "Query must be a SELECT statement."
+def _validate_template_name(template: str) -> Optional[str]:
+    if template not in ALLOWED_QUERY_TEMPLATES:
+        return f"Unsupported template '{template}'. Allowed templates: {sorted(ALLOWED_QUERY_TEMPLATES)}"
     return None
 
 
@@ -110,20 +109,46 @@ def query_syslog(
     }
 
 
-def query_clickhouse(sql: str) -> Dict[str, Any]:
-    """Execute a custom SELECT query against ClickHouse (read-only)."""
-    err = _validate_select(sql)
+def query_clickhouse(
+    template: str = "recent_syslog",
+    host: Optional[str] = None,
+    since_minutes: int = 30,
+    severity_filter: Optional[str] = None,
+    message_contains: Optional[str] = None,
+    limit: int = 100,
+) -> Dict[str, Any]:
+    """Execute an allowlisted read-only query template against ClickHouse.
+
+    Supported templates:
+    - recent_syslog
+    - recent_errors
+    - severity_stats
+    - host_activity
+    """
+    err = _validate_template_name(template)
     if err:
         return {"success": False, "error": err}
-    result = _execute_query(sql)
-    if not result["success"]:
-        return result
-    return {
-        "success": True,
-        "count": result["count"],
-        "rows": result["rows"][:500],
-        "truncated": result["count"] > 500,
-    }
+
+    since_minutes = max(1, since_minutes)
+    limit = min(max(1, limit), 1000)
+
+    if template == "recent_errors":
+        return get_recent_errors(host=host, since_minutes=since_minutes, limit=min(limit, 500))
+
+    if template == "severity_stats":
+        return get_severity_stats(host=host, since_minutes=since_minutes)
+
+    if template == "host_activity":
+        return get_syslog_hosts(since_minutes=since_minutes)
+
+    # template == "recent_syslog"
+    return query_syslog(
+        host=host,
+        since_minutes=since_minutes,
+        severity_filter=severity_filter,
+        message_contains=message_contains,
+        limit=limit,
+    )
 
 
 def get_syslog_hosts(since_minutes: int = 60) -> Dict[str, Any]:

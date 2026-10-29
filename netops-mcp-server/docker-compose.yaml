@@ -21,7 +21,7 @@ services:
     container_name: netops-mcp-server
     env_file: .env
     ports:
-      - "8010:8010"
+      - "127.0.0.1:8010:8010"
     networks:
       - netops-mcp-network
       - mcp-server
