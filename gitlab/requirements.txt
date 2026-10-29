@@ -41,7 +41,7 @@ pycparser==3.0
     # via cffi
 pynacl==1.6.2
     # via paramiko
-pynetbox==7.8.0
+pynetbox==7.9.0
     # via -r requirements.in
 pytz==2026.5
     # via -r requirements.in
@@ -54,4 +54,6 @@ requests==2.34.2
 resolvelib==1.0.1
     # via ansible-core
 urllib3==2.8.0
-    # via requests
+    # via
+    #   pynetbox
+    #   requests
