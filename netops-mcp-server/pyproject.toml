@@ -3,7 +3,7 @@ name = "netops-mcp-server"
 version = "0.1.0"
 description = "Combined MCP server for netops-stack: NetBox, Prometheus, ClickHouse, GitLab, IOS-XE (<50 tools)"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "fastmcp>=3.4.7",
     "pyjwt>=2.12.0",  # GHSA: override transitive PyJWT (crit header); Dependabot alert #1
@@ -14,6 +14,7 @@ dependencies = [
     "mcp>=1.28.1",  # CVE-2026-59950, CVE-2026-52869/52870 (transitive via FastMCP)
     "pydantic-settings>=2.15.0",  # GHSA-4xgf-cpjx-pc3j (transitive via FastMCP / mcp)
     "pygments>=2.20.0",  # CVE-2026-4539 (transitive via pytest rich output)
+    "dnspython>=2.9.0",  # GHSA-45c3-73f7-pv4m (transitive via email-validator)
     "httpx>=0.24",
     "requests>=2.34.2",
     "netmiko>=4.0",
