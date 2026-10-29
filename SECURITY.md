@@ -39,7 +39,7 @@ Timelines depend on severity validation and maintainer availability. We will ack
 
 - **Secrets:** Never commit tokens, passwords, or private keys. Use environment variables, GitLab CI/CD masked variables, or a secrets manager.
 - **NetBox / GitLab / devices:** Restrict API tokens and SSH credentials; rotate on suspicion of compromise.
-- **MCP server:** Run with least privilege; do not expose management interfaces to untrusted networks without TLS and access control.
+- **MCP server:** Keep `MCP_HOST=127.0.0.1` for local-only usage. If exposing beyond loopback, require `MCP_API_TOKEN` (Bearer auth), restrict network access, and terminate TLS in trusted ingress.
 - **Dependencies:** Apply Dependabot / renovate updates and rebuild container images regularly.
 - **Supply chain:** Prefer pinned image digests and lockfiles (see repository Dockerfiles and `uv.lock` / compiled `requirements.txt`).
 

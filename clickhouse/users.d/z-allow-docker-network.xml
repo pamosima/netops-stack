@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- Override default user: allow these networks and no password (so curl from 198.18.x and Vector from Docker work). -->
+<!-- Override default user + add dedicated read-only MCP user. -->
 <clickhouse>
   <users>
     <default replace="replace">
@@ -16,5 +16,30 @@
       <profile>default</profile>
       <quota>default</quota>
     </default>
+
+    <!-- Dedicated read-only account for MCP queries -->
+    <mcp_reader>
+      <password></password>
+      <networks>
+        <ip>::1</ip>
+        <ip>127.0.0.1</ip>
+        <ip>10.0.0.0/8</ip>
+        <ip>192.168.60.0/24</ip>
+        <ip>192.168.0.0/16</ip>
+        <ip>172.16.0.0/12</ip>
+        <ip>198.18.0.0/16</ip>
+      </networks>
+      <profile>mcp_readonly</profile>
+      <quota>default</quota>
+    </mcp_reader>
   </users>
+
+  <profiles>
+    <mcp_readonly>
+      <readonly>2</readonly>
+      <allow_ddl>0</allow_ddl>
+      <!-- Block dangerous table functions often used for file read / SSRF -->
+      <disabled_functions>file,url,urlCluster,urlFile,s3,s3Cluster,hdfs,hdfsCluster,remote,remoteSecure,mysql,postgresql,jdbc,odbc,mongodb,redis,s3Queue,deltaLake,iceberg</disabled_functions>
+    </mcp_readonly>
+  </profiles>
 </clickhouse>

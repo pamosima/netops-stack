@@ -8,7 +8,7 @@ Single combined MCP server for **netops-stack** with **under 50 tools**, **GitLa
 |------------|------------|-------|--------|
 | NetBox     | `netbox_`  | 9     | SoT only: get_sites, get_site_by_id, get_devices, get_device_by_id, get_device_types, get_device_roles, get_ip_addresses, get_vlans, search_objects |
 | Prometheus | `prometheus_` | 5  | Metrics: query_prometheus, query_prometheus_range, list_metric_names, get_targets, suggest_queries |
-| ClickHouse | `clickhouse_` | 5  | Syslog: query_syslog, query_clickhouse, get_syslog_hosts, get_severity_stats, get_recent_errors |
+| ClickHouse | `clickhouse_` | 5  | Syslog: query_syslog, query_clickhouse (allowlisted templates only), get_syslog_hosts, get_severity_stats, get_recent_errors |
 | GitLab     | `gitlab_`  | 8    | CI/CD: trigger pipeline, status, job logs, artifacts, list projects/pipelines, get/update repo file |
 | IOS-XE     | `ios_xe_`  | 1–2  | Device: show_command; config_command (disabled if `IOS_XE_READ_ONLY=true`) |
 | **Flows**  | `flow_`    | 6    | **flow_run_troubleshoot_flow**, **flow_run_rollback_flow**, **flow_run_apply_flow** (configuration flow: upload desired config → dry-run). **flow_trigger_collect_pipeline**, **flow_trigger_apply_pipeline(target_host)**, **flow_trigger_rollback_pipeline(target_host)** — one tool per pipeline. |
@@ -40,8 +40,10 @@ Set in `.env` or the environment. Only set the backends you use.
 | `CLICKHOUSE_URL` | ClickHouse tools | `http://localhost:8123` |
 | `GITLAB_URL`, `GITLAB_TOKEN` | GitLab tools | `https://gitlab.com`, `glpat-...` |
 | `IOS_XE_USERNAME`, `IOS_XE_PASSWORD` | IOS-XE tools | Device SSH credentials |
-| `IOS_XE_READ_ONLY` | Optional | `true` = show only, no config_command |
-| `MCP_HOST`, `MCP_PORT` | Server bind | Default `0.0.0.0`, `8010` |
+| `IOS_XE_READ_ONLY` | Optional | Default `true` (show only, no config_command) |
+| `MCP_HOST`, `MCP_PORT` | Server bind | Default `127.0.0.1`, `8010` |
+| `MCP_API_TOKEN` | Required when `MCP_HOST` is non-loopback | Bearer token for inbound MCP API auth |
+| `GITLAB_ENABLE_WRITES` | Optional | Default `false`; set `true` to allow pipeline triggers/manual jobs/repo updates |
 
 ## Run locally
 
@@ -52,7 +54,13 @@ pip install -e .
 python -m netops_mcp_server.server
 ```
 
-Server listens on `http://0.0.0.0:8010`. Use transport `streamable-http` and URL `http://localhost:8010/mcp` in Cursor or other MCP clients.
+Server listens on `http://127.0.0.1:8010` by default. Use transport `streamable-http` and URL `http://localhost:8010/mcp` in Cursor or other MCP clients.
+
+If you bind to a non-loopback interface (for example `MCP_HOST=0.0.0.0`), you **must** set `MCP_API_TOKEN` and clients must send:
+
+```text
+Authorization: Bearer <MCP_API_TOKEN>
+```
 
 ## Run with Docker
 
@@ -60,7 +68,7 @@ The image is built from **`uv.lock`** (reproducible deps) and a digest-pinned `p
 
 ```bash
 docker build -t netops-mcp-server .
-docker run --env-file .env -p 8010:8010 netops-mcp-server
+docker run --env-file .env -p 127.0.0.1:8010:8010 netops-mcp-server
 ```
 
 ## Run with Docker Compose (MCP server only)
@@ -119,7 +127,7 @@ http://host.docker.internal:8010/mcp
 **Option D — Host IP and published port**  
 If the host’s IP is reachable from LibreChat’s container: `http://<host-ip>:8010/mcp`
 
-Ensure the MCP server binds on all interfaces (`MCP_HOST=0.0.0.0` in `.env`, which is the default).
+For local use, keep loopback bind (`MCP_HOST=127.0.0.1`, default). If remote clients must connect, set `MCP_HOST=0.0.0.0`, protect access with network controls, and set `MCP_API_TOKEN`.
 
 ## Cursor MCP config
 
@@ -138,6 +146,11 @@ Add to `~/.cursor/mcp.json` (or project MCP config):
 ```
 
 ## GitLab tools (CI/CD)
+
+Mutating GitLab operations are disabled by default. Set `GITLAB_ENABLE_WRITES=true` to allow:
+- pipeline triggers
+- playing manual jobs
+- repository file updates
 
 - **gitlab_trigger_gitlab_pipeline** — Trigger pipeline (e.g. with `ROLLBACK_PIPELINE=true`, `TARGET_HOST=sw11-1`).
 - **gitlab_get_gitlab_pipeline_status** — Check pipeline status and jobs.

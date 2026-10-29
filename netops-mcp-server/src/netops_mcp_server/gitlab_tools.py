@@ -32,6 +32,7 @@ logger = logging.getLogger(__name__)
 GITLAB_URL = os.getenv("GITLAB_URL", "https://gitlab.com").rstrip("/")
 GITLAB_TOKEN = os.getenv("GITLAB_TOKEN", "")
 GITLAB_DEFAULT_PROJECT_ID = os.getenv("GITLAB_DEFAULT_PROJECT_ID", "")
+GITLAB_ENABLE_WRITES = os.getenv("GITLAB_ENABLE_WRITES", "false").lower() in ("true", "1", "yes")
 DEFAULT_ALLOWED_VARS = [
     "DRY_RUN", "TARGET_HOST", "TARGET_HOSTS", "SITE_PIPELINE", "SWITCH_PIPELINE",
     "PLAYBOOK", "EXTRA_VARS", "LIMIT", "TAGS", "SKIP_TAGS", "VERBOSITY",
@@ -115,6 +116,11 @@ def trigger_gitlab_pipeline(
 ) -> Dict[str, Any]:
     """Trigger a CI/CD pipeline in GitLab via POST projects/:id/pipeline (same as Run pipeline in UI).
     Uses GITLAB_TOKEN; variables are sent in the JSON body. project_id can be numeric or string."""
+    if not GITLAB_ENABLE_WRITES:
+        return {
+            "success": False,
+            "error": "GitLab write operations are disabled (set GITLAB_ENABLE_WRITES=true to enable pipeline triggers)",
+        }
     err = _check_rate("trigger", RATE_LIMIT_TRIGGER)
     if err:
         return {"success": False, "error": err}
@@ -209,6 +215,11 @@ def play_gitlab_job(
     job_id: int = 0,
 ) -> Dict[str, Any]:
     """Play (trigger) a manual GitLab job. Use after triggering a pipeline that has manual jobs (e.g. rollback_apply)."""
+    if not GITLAB_ENABLE_WRITES:
+        return {
+            "success": False,
+            "error": "GitLab write operations are disabled (set GITLAB_ENABLE_WRITES=true to enable manual job play)",
+        }
     project = _norm_project_id(project_id) or GITLAB_DEFAULT_PROJECT_ID
     if not project or not job_id:
         return {"success": False, "error": "project_id and job_id required"}
@@ -288,6 +299,11 @@ def update_gitlab_repository_file(
     """Create or update a file in a GitLab repository (allowed paths, rate limited).
     If the file does not exist, uses GitLab create (POST); otherwise update (PUT).
     Use this for ansible/configs/desired/<host>.txt when the file may not exist yet."""
+    if not GITLAB_ENABLE_WRITES:
+        return {
+            "success": False,
+            "error": "GitLab write operations are disabled (set GITLAB_ENABLE_WRITES=true to enable repository updates)",
+        }
     err = _check_rate("file_update", RATE_LIMIT_FILE)
     if err:
         return {"success": False, "error": err}
